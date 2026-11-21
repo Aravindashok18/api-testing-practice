@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="API Testing Practice" tests="33" time="6.508">
+  <testsuite name="Posts / GET all posts" id="0860106b-b094-45f0-a5fa-cd1b9dc7b2dc" timestamp="2026-11-21T08:45:29.728Z" tests="5" failures="0" errors="0" time="0.163">
+    <testcase name="Status is 200" time="0.163" classname="PostsGetAllPosts"/>
+    <testcase name="Response time &lt; 1500ms" time="0.163" classname="PostsGetAllPosts"/>
+    <testcase name="Content-Type is JSON" time="0.163" classname="PostsGetAllPosts"/>
+    <testcase name="Returns 100 posts" time="0.163" classname="PostsGetAllPosts"/>
+    <testcase name="Each post has id, userId, title, body" time="0.163" classname="PostsGetAllPosts"/>
+  </testsuite>
+  <testsuite name="Posts / GET post by valid ID" id="3b9e3fa5-76b9-400f-889e-ab0860f53a26" timestamp="2026-11-21T08:45:29.728Z" tests="4" failures="0" errors="0" time="0.047">
+    <testcase name="Status is 200" time="0.047" classname="PostsGetPostByValidId"/>
+    <testcase name="Content-Type is JSON" time="0.047" classname="PostsGetPostByValidId"/>
+    <testcase name="id matches URL" time="0.047" classname="PostsGetPostByValidId"/>
+    <testcase name="title is a non-empty string" time="0.047" classname="PostsGetPostByValidId"/>
+  </testsuite>
+  <testsuite name="Posts / GET post by last valid ID (100)" id="0fcea4e2-72a1-4871-86ae-a613c25e809e" timestamp="2026-11-21T08:45:29.728Z" tests="2" failures="0" errors="0" time="0.051">
+    <testcase name="Status is 200" time="0.051" classname="PostsGetPostByLastValidId100"/>
+    <testcase name="id is 100" time="0.051" classname="PostsGetPostByLastValidId100"/>
+  </testsuite>
+  <testsuite name="Posts / GET post by invalid ID (0)" id="c9d88bf4-7e8e-416a-8803-4146e75d0750" timestamp="2026-11-21T08:45:29.728Z" tests="2" failures="0" errors="0" time="0.052">
+    <testcase name="Status is 404" time="0.052" classname="PostsGetPostByInvalidId0"/>
+    <testcase name="Body is empty object" time="0.052" classname="PostsGetPostByInvalidId0"/>
+  </testsuite>
+  <testsuite name="Posts / GET post by out-of-range ID (101)" id="4633385d-5083-4ecb-a86f-edf5c4c12983" timestamp="2026-11-21T08:45:29.728Z" tests="1" failures="0" errors="0" time="0.051">
+    <testcase name="Status is 404" time="0.051" classname="PostsGetPostByOutOfRangeId101"/>
+  </testsuite>
+  <testsuite name="Posts / GET post by non-numeric ID" id="7c41df52-816e-4a23-adbf-156a8705fb2c" timestamp="2026-11-21T08:45:29.728Z" tests="2" failures="0" errors="0" time="0.050">
+    <testcase name="Status is 404" time="0.050" classname="PostsGetPostByNonNumericId"/>
+    <testcase name="No stack trace in body" time="0.050" classname="PostsGetPostByNonNumericId"/>
+  </testsuite>
+  <testsuite name="Posts / GET posts filtered by userId" id="6a7c6630-00d0-4426-95a0-86fc950ee4f5" timestamp="2026-11-21T08:45:29.728Z" tests="3" failures="0" errors="0" time="0.053">
+    <testcase name="Status is 200" time="0.053" classname="PostsGetPostsFilteredByUserId"/>
+    <testcase name="All posts belong to user 1" time="0.053" classname="PostsGetPostsFilteredByUserId"/>
+    <testcase name="User 1 has 10 posts" time="0.053" classname="PostsGetPostsFilteredByUserId"/>
+  </testsuite>
+  <testsuite name="Posts / GET posts with unknown userId" id="8f38b320-2d0d-40d8-89ca-d85720da7c89" timestamp="2026-11-21T08:45:29.728Z" tests="2" failures="0" errors="0" time="0.051">
+    <testcase name="Status is 200" time="0.051" classname="PostsGetPostsWithUnknownUserId"/>
+    <testcase name="Empty array, not 404" time="0.051" classname="PostsGetPostsWithUnknownUserId"/>
+  </testsuite>
+  <testsuite name="Posts / POST create post (valid)" id="552860f6-b595-41ce-8cc4-1ea7fb98b43b" timestamp="2026-11-21T08:45:29.728Z" tests="4" failures="0" errors="0" time="0.798">
+    <testcase name="Status is 201" time="0.798" classname="PostsPostCreatePostValid"/>
+    <testcase name="Content-Type is JSON" time="0.798" classname="PostsPostCreatePostValid"/>
+    <testcase name="Returns new id" time="0.798" classname="PostsPostCreatePostValid"/>
+    <testcase name="Echoes title and body" time="0.798" classname="PostsPostCreatePostValid"/>
+  </testsuite>
+  <testsuite name="Posts / POST create post (missing fields)" id="15f69197-50c7-4dae-b969-cac7e77ee873" timestamp="2026-11-21T08:45:29.728Z" tests="2" failures="0" errors="0" time="0.302">
+    <testcase name="Status is 201" time="0.302" classname="PostsPostCreatePostMissingFields"/>
+    <testcase name="Documented: API accepts empty body (no validation)" time="0.302" classname="PostsPostCreatePostMissingFields"/>
+  </testsuite>
+  <testsuite name="Posts / POST create post (wrong types)" id="f8150801-5e4a-4f82-9b71-7dd32d33fa12" timestamp="2026-11-21T08:45:29.728Z" tests="2" failures="0" errors="0" time="0.310">
+    <testcase name="Status is 201" time="0.310" classname="PostsPostCreatePostWrongTypes"/>
+    <testcase name="Documented: wrong types accepted" time="0.310" classname="PostsPostCreatePostWrongTypes"/>
+  </testsuite>
+  <testsuite name="Posts / POST create post (malformed JSON)" id="9f166563-8fe7-4aa9-b3b2-ce59ffe393a7" timestamp="2026-11-21T08:45:29.728Z" tests="1" failures="0" errors="0" time="0.298">
+    <testcase name="Documented: malformed JSON returns 500 instead of 400" time="0.298" classname="PostsPostCreatePostMalformedJson"/>
+  </testsuite>
+  <testsuite name="Posts / PUT full update (valid)" id="c913cce2-df8b-4558-a225-07aaa64b85e1" timestamp="2026-11-21T08:45:29.728Z" tests="3" failures="0" errors="0" time="0.285">
+    <testcase name="Status is 200" time="0.285" classname="PostsPutFullUpdateValid"/>
+    <testcase name="id unchanged" time="0.285" classname="PostsPutFullUpdateValid"/>
+    <testcase name="title updated" time="0.285" classname="PostsPutFullUpdateValid"/>
+  </testsuite>
+  <testsuite name="Posts / PUT update non-existent post" id="cd0c18b6-4a2e-4d2f-9119-ad58ec86a4ce" timestamp="2026-11-21T08:45:29.728Z" tests="2" failures="0" errors="0" time="0.359">
+    <testcase name="Status is 404" time="0.359" classname="PostsPutUpdateNonExistentPost"/>
+    <testcase name="Body is empty object" time="0.359" classname="PostsPutUpdateNonExistentPost"/>
+  </testsuite>
+  <testsuite name="Posts / PATCH partial update" id="695f865a-3a13-4b40-bea8-7149e10b9983" timestamp="2026-11-21T08:45:29.728Z" tests="3" failures="0" errors="0" time="0.303">
+    <testcase name="Status is 200" time="0.303" classname="PostsPatchPartialUpdate"/>
+    <testcase name="title patched" time="0.303" classname="PostsPatchPartialUpdate"/>
+    <testcase name="other fields preserved" time="0.303" classname="PostsPatchPartialUpdate"/>
+  </testsuite>
+  <testsuite name="Posts / PATCH non-existent post" id="f759ce85-114f-4c63-be03-a9f3179442a9" timestamp="2026-11-21T08:45:29.728Z" tests="3" failures="0" errors="0" time="0.300">
+    <testcase name="Status is 200" time="0.300" classname="PostsPatchNonExistentPost"/>
+    <testcase name="Documented: PATCH on missing id returns 200, PUT returns 404" time="0.300" classname="PostsPatchNonExistentPost"/>
+    <testcase name="Response has no id (nothing was found to patch)" time="0.300" classname="PostsPatchNonExistentPost"/>
+  </testsuite>
+  <testsuite name="Posts / DELETE post (valid)" id="b514b6b9-aab0-4dba-88f1-5148af08bbf3" timestamp="2026-11-21T08:45:29.728Z" tests="2" failures="0" errors="0" time="0.362">
+    <testcase name="Status is 200" time="0.362" classname="PostsDeletePostValid"/>
+    <testcase name="Body is empty object" time="0.362" classname="PostsDeletePostValid"/>
+  </testsuite>
+  <testsuite name="Posts / DELETE non-existent post" id="cb094d58-ccbf-42fe-9d7b-c3b7bdcedba4" timestamp="2026-11-21T08:45:29.728Z" tests="2" failures="0" errors="0" time="0.300">
+    <testcase name="Status is 200" time="0.300" classname="PostsDeleteNonExistentPost"/>
+    <testcase name="Documented: idempotent delete returns 200 not 404" time="0.300" classname="PostsDeleteNonExistentPost"/>
+  </testsuite>
+  <testsuite name="Comments &amp; Users / GET comments for post" id="ebd897d2-999f-46f3-aecc-71c4e886396b" timestamp="2026-11-21T08:45:29.728Z" tests="4" failures="0" errors="0" time="0.049">
+    <testcase name="Status is 200" time="0.049" classname="CommentsAmpUsersGetCommentsForPost"/>
+    <testcase name="5 comments" time="0.049" classname="CommentsAmpUsersGetCommentsForPost"/>
+    <testcase name="All belong to post 1" time="0.049" classname="CommentsAmpUsersGetCommentsForPost"/>
+    <testcase name="Emails look valid" time="0.049" classname="CommentsAmpUsersGetCommentsForPost"/>
+  </testsuite>
+  <testsuite name="Comments &amp; Users / GET comments for non-existent post" id="a845e2d7-d013-41c0-a06c-b0935c8e748d" timestamp="2026-11-21T08:45:29.728Z" tests="2" failures="0" errors="0" time="0.046">
+    <testcase name="Status is 200" time="0.046" classname="CommentsAmpUsersGetCommentsForNonExistentPost"/>
+    <testcase name="Empty array" time="0.046" classname="CommentsAmpUsersGetCommentsForNonExistentPost"/>
+  </testsuite>
+  <testsuite name="Comments &amp; Users / GET user invalid ID" id="d4834c25-2a20-4781-89ff-931cb39fb80a" timestamp="2026-11-21T08:45:29.728Z" tests="1" failures="0" errors="0" time="0.048">
+    <testcase name="Status is 404" time="0.048" classname="CommentsAmpUsersGetUserInvalidId"/>
+  </testsuite>
+  <testsuite name="ReqRes (pagination &amp; validation) / GET users page 2" id="2b5a1a8a-1306-4c03-86e1-cba79b036605" timestamp="2026-11-21T08:45:29.728Z" tests="4" failures="0" errors="0" time="0.220">
+    <testcase name="Status is 200" time="0.220" classname="ReqResPaginationAmpValidationGetUsersPage2"/>
+    <testcase name="page is 2" time="0.220" classname="ReqResPaginationAmpValidationGetUsersPage2"/>
+    <testcase name="per_page matches data length" time="0.220" classname="ReqResPaginationAmpValidationGetUsersPage2"/>
+    <testcase name="total_pages consistent" time="0.220" classname="ReqResPaginationAmpValidationGetUsersPage2"/>
+  </testsuite>
+  <testsuite name="ReqRes (pagination &amp; validation) / GET users page beyond last" id="0359f905-4737-4302-923d-ef1fa75a1c18" timestamp="2026-11-21T08:45:29.728Z" tests="2" failures="0" errors="0" time="0.161">
+    <testcase name="Status is 200" time="0.161" classname="ReqResPaginationAmpValidationGetUsersPageBeyondLast"/>
+    <testcase name="data is empty array" time="0.161" classname="ReqResPaginationAmpValidationGetUsersPageBeyondLast"/>
+  </testsuite>
+  <testsuite name="ReqRes (pagination &amp; validation) / GET single user not found" id="5b6939b5-9760-4ab3-b121-c14c03b93df7" timestamp="2026-11-21T08:45:29.728Z" tests="2" failures="0" errors="0" time="0.192">
+    <testcase name="Status is 404" time="0.192" classname="ReqResPaginationAmpValidationGetSingleUserNotFound"/>
+    <testcase name="Body is empty object" time="0.192" classname="ReqResPaginationAmpValidationGetSingleUserNotFound"/>
+  </testsuite>
+  <testsuite name="ReqRes (pagination &amp; validation) / POST login (valid)" id="ed85623d-8a2c-4235-820c-b7204d6dc871" timestamp="2026-11-21T08:45:29.728Z" tests="2" failures="0" errors="0" time="0.301">
+    <testcase name="Status is 200" time="0.301" classname="ReqResPaginationAmpValidationPostLoginValid"/>
+    <testcase name="token returned" time="0.301" classname="ReqResPaginationAmpValidationPostLoginValid"/>
+  </testsuite>
+  <testsuite name="ReqRes (pagination &amp; validation) / POST login (missing password)" id="8bf72d4f-a118-4517-880b-98fbc290976a" timestamp="2026-11-21T08:45:29.728Z" tests="2" failures="0" errors="0" time="0.161">
+    <testcase name="Status is 400" time="0.161" classname="ReqResPaginationAmpValidationPostLoginMissingPassword"/>
+    <testcase name="error message present" time="0.161" classname="ReqResPaginationAmpValidationPostLoginMissingPassword"/>
+  </testsuite>
+  <testsuite name="ReqRes (pagination &amp; validation) / POST register (missing email)" id="e49476d8-bd3d-458f-b1ee-a2b2e467db00" timestamp="2026-11-21T08:45:29.728Z" tests="2" failures="0" errors="0" time="0.171">
+    <testcase name="Status is 400" time="0.171" classname="ReqResPaginationAmpValidationPostRegisterMissingEmail"/>
+    <testcase name="error is Missing email or username" time="0.171" classname="ReqResPaginationAmpValidationPostRegisterMissingEmail"/>
+  </testsuite>
+  <testsuite name="ReqRes (pagination &amp; validation) / DELETE user" id="31011267-d0cd-4c7f-9340-eccae41c4bb4" timestamp="2026-11-21T08:45:29.728Z" tests="2" failures="0" errors="0" time="0.160">
+    <testcase name="Status is 204" time="0.160" classname="ReqResPaginationAmpValidationDeleteUser"/>
+    <testcase name="Empty body" time="0.160" classname="ReqResPaginationAmpValidationDeleteUser"/>
+  </testsuite>
+  <testsuite name="Auth failures / POST login (unknown user)" id="62b2af35-71de-4010-afc8-fe25606b2bd2" timestamp="2026-11-21T08:45:29.728Z" tests="2" failures="0" errors="0" time="0.161">
+    <testcase name="Status is 400" time="0.161" classname="AuthFailuresPostLoginUnknownUser"/>
+    <testcase name="error says user not found" time="0.161" classname="AuthFailuresPostLoginUnknownUser"/>
+  </testsuite>
+  <testsuite name="Auth failures / POST login (wrong password)" id="b5a1209e-5a7b-4837-8420-1d3bb318a50c" timestamp="2026-11-21T08:45:29.728Z" tests="3" failures="0" errors="0" time="0.159">
+    <testcase name="Status is 200" time="0.159" classname="AuthFailuresPostLoginWrongPassword"/>
+    <testcase name="Documented: wrong password still returns a token" time="0.159" classname="AuthFailuresPostLoginWrongPassword"/>
+    <testcase name="Token is identical to the valid-login token" time="0.159" classname="AuthFailuresPostLoginWrongPassword"/>
+  </testsuite>
+  <testsuite name="Auth failures / GET user with invalid API key" id="0e050a97-e89c-4db5-8d05-58ee05cfdd8a" timestamp="2026-11-21T08:45:29.728Z" tests="2" failures="0" errors="0" time="0.214">
+    <testcase name="Status is 403" time="0.214" classname="AuthFailuresGetUserWithInvalidApiKey"/>
+    <testcase name="Rejected as invalid_api_key with no user data" time="0.214" classname="AuthFailuresGetUserWithInvalidApiKey"/>
+  </testsuite>
+  <testsuite name="Auth failures / GET /user with no token (GitHub)" id="846cca78-2517-495a-a07d-d7d67db7e6dc" timestamp="2026-11-21T08:45:29.728Z" tests="2" failures="0" errors="0" time="0.084">
+    <testcase name="Status is 401" time="0.084" classname="AuthFailuresGetUserWithNoTokenGitHub"/>
+    <testcase name="message is Requires authentication" time="0.084" classname="AuthFailuresGetUserWithNoTokenGitHub"/>
+  </testsuite>
+  <testsuite name="Auth failures / GET /user with invalid token (GitHub)" id="2780ae6a-3975-40c1-9b9d-a57abc5f1db3" timestamp="2026-11-21T08:45:29.728Z" tests="2" failures="0" errors="0" time="0.246">
+    <testcase name="Status is 401" time="0.246" classname="AuthFailuresGetUserWithInvalidTokenGitHub"/>
+    <testcase name="message is Bad credentials" time="0.246" classname="AuthFailuresGetUserWithInvalidTokenGitHub"/>
+  </testsuite>
+</testsuites>

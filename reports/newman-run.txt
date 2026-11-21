@@ -1,8 +1,10 @@
+newman
+
 API Testing Practice
 
 ❏ Posts
 ↳ GET all posts
-  GET https://jsonplaceholder.typicode.com/posts [200 OK, 28.66kB, 167ms]
+  GET https://jsonplaceholder.typicode.com/posts [200 OK, 28.49kB, 163ms]
   ✓  Status is 200
   ✓  Response time < 1500ms
   ✓  Content-Type is JSON
@@ -10,51 +12,51 @@ API Testing Practice
   ✓  Each post has id, userId, title, body
 
 ↳ GET post by valid ID
-  GET https://jsonplaceholder.typicode.com/posts/1 [200 OK, 1.44kB, 51ms]
+  GET https://jsonplaceholder.typicode.com/posts/1 [200 OK, 1.26kB, 47ms]
   ✓  Status is 200
   ✓  Content-Type is JSON
   ✓  id matches URL
   ✓  title is a non-empty string
 
 ↳ GET post by last valid ID (100)
-  GET https://jsonplaceholder.typicode.com/posts/100 [200 OK, 1.4kB, 51ms]
+  GET https://jsonplaceholder.typicode.com/posts/100 [200 OK, 1.23kB, 51ms]
   ✓  Status is 200
   ✓  id is 100
 
 ↳ GET post by invalid ID (0)
-  GET https://jsonplaceholder.typicode.com/posts/0 [404 Not Found, 1.12kB, 48ms]
+  GET https://jsonplaceholder.typicode.com/posts/0 [404 Not Found, 944B, 52ms]
   ✓  Status is 404
   ✓  Body is empty object
 
 ↳ GET post by out-of-range ID (101)
-  GET https://jsonplaceholder.typicode.com/posts/101 [404 Not Found, 1.12kB, 51ms]
+  GET https://jsonplaceholder.typicode.com/posts/101 [404 Not Found, 946B, 51ms]
   ✓  Status is 404
 
 ↳ GET post by non-numeric ID
-  GET https://jsonplaceholder.typicode.com/posts/abc [404 Not Found, 1.12kB, 53ms]
+  GET https://jsonplaceholder.typicode.com/posts/abc [404 Not Found, 950B, 50ms]
   ✓  Status is 404
   ✓  No stack trace in body
 
 ↳ GET posts filtered by userId
-  GET https://jsonplaceholder.typicode.com/posts?userId=1 [200 OK, 2.16kB, 50ms]
+  GET https://jsonplaceholder.typicode.com/posts?userId=1 [200 OK, 3.71kB, 53ms]
   ✓  Status is 200
   ✓  All posts belong to user 1
   ✓  User 1 has 10 posts
 
 ↳ GET posts with unknown userId
-  GET https://jsonplaceholder.typicode.com/posts?userId=9999 [200 OK, 1.13kB, 51ms]
+  GET https://jsonplaceholder.typicode.com/posts?userId=9999 [200 OK, 953B, 51ms]
   ✓  Status is 200
   ✓  Empty array, not 404
 
 ↳ POST create post (valid)
-  POST https://jsonplaceholder.typicode.com/posts [201 Created, 1.32kB, 284ms]
+  POST https://jsonplaceholder.typicode.com/posts [201 Created, 1.15kB, 798ms]
   ✓  Status is 201
   ✓  Content-Type is JSON
   ✓  Returns new id
   ✓  Echoes title and body
 
 ↳ POST create post (missing fields)
-  POST https://jsonplaceholder.typicode.com/posts [201 Created, 1.24kB, 283ms]
+  POST https://jsonplaceholder.typicode.com/posts [201 Created, 1.07kB, 302ms]
   ✓  Status is 201
   ✓  Documented: API accepts empty body (no validation)
   ┌
@@ -63,12 +65,12 @@ API Testing Practice
   └
 
 ↳ POST create post (wrong types)
-  POST https://jsonplaceholder.typicode.com/posts [201 Created, 1.3kB, 281ms]
+  POST https://jsonplaceholder.typicode.com/posts [201 Created, 1.12kB, 310ms]
   ✓  Status is 201
   ✓  Documented: wrong types accepted
 
 ↳ POST create post (malformed JSON)
-  POST https://jsonplaceholder.typicode.com/posts [500 Internal Server Error, 1.76kB, 279ms]
+  POST https://jsonplaceholder.typicode.com/posts [500 Internal Server Error, 1.64kB, 298ms]
   ✓  Documented: malformed JSON returns 500 instead of 400
   ┌
   │ 'Expected 400 Bad Request for malformed JSON, actual 5
@@ -76,142 +78,148 @@ API Testing Practice
   └
 
 ↳ PUT full update (valid)
-  PUT https://jsonplaceholder.typicode.com/posts/1 [200 OK, 1.22kB, 285ms]
+  PUT https://jsonplaceholder.typicode.com/posts/1 [200 OK, 1.03kB, 285ms]
   ✓  Status is 200
   ✓  id unchanged
   ✓  title updated
 
 ↳ PUT update non-existent post
-  PUT https://jsonplaceholder.typicode.com/posts/9999 [500 Internal Server Error, 1.91kB, 312ms]
-  ✓  Status is 500
-  ✓  Documented: returns 500 instead of 404
-  ┌
-  │ 'Expected 404, actual 500 — OBS-03'
-  └
+  PUT https://jsonplaceholder.typicode.com/posts/9999 [404 Not Found, 933B, 359ms]
+  ✓  Status is 404
+  ✓  Body is empty object
 
 ↳ PATCH partial update
-  PATCH https://jsonplaceholder.typicode.com/posts/1 [200 OK, 1.36kB, 282ms]
+  PATCH https://jsonplaceholder.typicode.com/posts/1 [200 OK, 1.18kB, 303ms]
   ✓  Status is 200
   ✓  title patched
   ✓  other fields preserved
 
+↳ PATCH non-existent post
+  PATCH https://jsonplaceholder.typicode.com/posts/9999 [200 OK, 950B, 300ms]
+  ✓  Status is 200
+  ✓  Documented: PATCH on missing id returns 200, PUT returns 404
+  ✓  Response has no id (nothing was found to patch)
+  ┌
+  │ 'Expected 404 for PATCH /posts/9999, actual 200 - OBS-
+  │ 03'
+  └
+
 ↳ DELETE post (valid)
-  DELETE https://jsonplaceholder.typicode.com/posts/1 [200 OK, 1.11kB, 286ms]
+  DELETE https://jsonplaceholder.typicode.com/posts/1 [200 OK, 924B, 362ms]
   ✓  Status is 200
   ✓  Body is empty object
 
 ↳ DELETE non-existent post
-  DELETE https://jsonplaceholder.typicode.com/posts/9999 [200 OK, 1.11kB, 281ms]
+  DELETE https://jsonplaceholder.typicode.com/posts/9999 [200 OK, 922B, 300ms]
   ✓  Status is 200
   ✓  Documented: idempotent delete returns 200 not 404
   ┌
-  │ 'Expected 404, actual 200 — OBS-04'
+  │ 'Expected 404, actual 200 - note N-1 (idempotent delet
+  │ e)'
   └
 
-❏ Comments
+❏ Comments & Users
 ↳ GET comments for post
-  GET https://jsonplaceholder.typicode.com/posts/1/comments [200 OK, 1.82kB, 51ms]
+  GET https://jsonplaceholder.typicode.com/posts/1/comments [200 OK, 2.48kB, 49ms]
   ✓  Status is 200
   ✓  5 comments
   ✓  All belong to post 1
   ✓  Emails look valid
 
 ↳ GET comments for non-existent post
-  GET https://jsonplaceholder.typicode.com/posts/9999/comments [200 OK, 1.15kB, 60ms]
+  GET https://jsonplaceholder.typicode.com/posts/9999/comments [200 OK, 965B, 46ms]
   ✓  Status is 200
   ✓  Empty array
 
-↳ GET comments by postId query
-  GET https://jsonplaceholder.typicode.com/comments?postId=1 [200 OK, 1.81kB, 51ms]
-  ✓  Status is 200
-  ✓  Same result as nested route
-
-❏ Users
-↳ GET all users
-  GET https://jsonplaceholder.typicode.com/users [200 OK, 3.01kB, 53ms]
-  ✓  Status is 200
-  ✓  10 users
-  ✓  Nested address.geo present
-
-↳ GET user by ID
-  GET https://jsonplaceholder.typicode.com/users/1 [200 OK, 1.65kB, 54ms]
-  ✓  Status is 200
-  ✓  username is Bret
-
 ↳ GET user invalid ID
-  GET https://jsonplaceholder.typicode.com/users/-1 [404 Not Found, 1.12kB, 53ms]
+  GET https://jsonplaceholder.typicode.com/users/-1 [404 Not Found, 940B, 48ms]
   ✓  Status is 404
 
-↳ GET todos for user
-  GET https://jsonplaceholder.typicode.com/users/1/todos [200 OK, 3.42kB, 57ms]
-  ✓  Status is 200
-  ✓  20 todos
-  ✓  completed is boolean
-
-❏ ReqRes (auth & pagination)
+❏ ReqRes (pagination & validation)
 ↳ GET users page 2
-  GET https://reqres.in/api/users?page=2 [200 OK, 3.51kB, 292ms]
+  GET https://reqres.in/api/users?page=2 [200 OK, 4.11kB, 220ms]
   ✓  Status is 200
   ✓  page is 2
   ✓  per_page matches data length
   ✓  total_pages consistent
 
 ↳ GET users page beyond last
-  GET https://reqres.in/api/users?page=999 [200 OK, 2.69kB, 300ms]
+  GET https://reqres.in/api/users?page=999 [200 OK, 3.23kB, 161ms]
   ✓  Status is 200
   ✓  data is empty array
 
 ↳ GET single user not found
-  GET https://reqres.in/api/users/23 [404 Not Found, 1.9kB, 295ms]
+  GET https://reqres.in/api/users/23 [404 Not Found, 2.22kB, 192ms]
   ✓  Status is 404
   ✓  Body is empty object
 
 ↳ POST login (valid)
-  POST https://reqres.in/api/login [200 OK, 2.27kB, 291ms]
+  POST https://reqres.in/api/login [200 OK, 3.1kB, 301ms]
   ✓  Status is 200
   ✓  token returned
 
 ↳ POST login (missing password)
-  POST https://reqres.in/api/login [400 Bad Request, 1.85kB, 169ms]
+  POST https://reqres.in/api/login [400 Bad Request, 2.13kB, 161ms]
   ✓  Status is 400
   ✓  error message present
 
-↳ POST login (unknown user)
-  POST https://reqres.in/api/login [400 Bad Request, 1.83kB, 169ms]
-  ✓  Status is 400
-  ✓  error says user not found
-
 ↳ POST register (missing email)
-  POST https://reqres.in/api/register [400 Bad Request, 1.84kB, 166ms]
+  POST https://reqres.in/api/register [400 Bad Request, 2.15kB, 171ms]
   ✓  Status is 400
   ✓  error is Missing email or username
 
 ↳ DELETE user
-  DELETE https://reqres.in/api/users/2 [204 No Content, 1.83kB, 165ms]
+  DELETE https://reqres.in/api/users/2 [204 No Content, 2.13kB, 160ms]
   ✓  Status is 204
   ✓  Empty body
 
-↳ GET delayed response
-  GET https://reqres.in/api/users?delay=3 [200 OK, 3.47kB, 3.1s]
-  ✓  Status is 200
-  ✓  Takes at least 3s (delay param honoured)
+❏ Auth failures
+↳ POST login (unknown user)
+  POST https://reqres.in/api/login [400 Bad Request, 2.14kB, 161ms]
+  ✓  Status is 400
+  ✓  error says user not found
 
-┌─────────────────────────┬────────────────────┬───────────────────┐
-│                         │           executed │            failed │
-├─────────────────────────┼────────────────────┼───────────────────┤
-│              iterations │                  1 │                 0 │
-├─────────────────────────┼────────────────────┼───────────────────┤
-│                requests │                 33 │                 0 │
-├─────────────────────────┼────────────────────┼───────────────────┤
-│            test-scripts │                 33 │                 0 │
-├─────────────────────────┼────────────────────┼───────────────────┤
-│      prerequest-scripts │                  0 │                 0 │
-├─────────────────────────┼────────────────────┼───────────────────┤
-│              assertions │                 79 │                 0 │
-├─────────────────────────┴────────────────────┴───────────────────┤
-│ total run duration: 8.8s                                         │
-├──────────────────────────────────────────────────────────────────┤
-│ total data received: 41.22kB (approx)                            │
-├──────────────────────────────────────────────────────────────────┤
-│ average response time: 257ms [min: 48ms, max: 3.1s, s.d.: 525ms] │
-└──────────────────────────────────────────────────────────────────┘
+↳ POST login (wrong password)
+  POST https://reqres.in/api/login [200 OK, 3.1kB, 159ms]
+  ✓  Status is 200
+  ✓  Documented: wrong password still returns a token
+  ✓  Token is identical to the valid-login token
+  ┌
+  │ 'Expected 401 for a wrong password, actual 200 with a 
+  │ token - OBS-04'
+  └
+
+↳ GET user with invalid API key
+  GET https://reqres.in/api/users/2 [403 Forbidden, 2.8kB, 214ms]
+  ✓  Status is 403
+  ✓  Rejected as invalid_api_key with no user data
+
+↳ GET /user with no token (GitHub)
+  GET https://api.github.com/user [401 Unauthorized, 1.23kB, 84ms]
+  ✓  Status is 401
+  ✓  message is Requires authentication
+
+↳ GET /user with invalid token (GitHub)
+  GET https://api.github.com/user [401 Unauthorized, 1.09kB, 246ms]
+  ✓  Status is 401
+  ✓  message is Bad credentials
+
+┌─────────────────────────┬────────────────────┬────────────────────┐
+│                         │           executed │             failed │
+├─────────────────────────┼────────────────────┼────────────────────┤
+│              iterations │                  1 │                  0 │
+├─────────────────────────┼────────────────────┼────────────────────┤
+│                requests │                 33 │                  0 │
+├─────────────────────────┼────────────────────┼────────────────────┤
+│            test-scripts │                 33 │                  0 │
+├─────────────────────────┼────────────────────┼────────────────────┤
+│      prerequest-scripts │                  0 │                  0 │
+├─────────────────────────┼────────────────────┼────────────────────┤
+│              assertions │                 79 │                  0 │
+├─────────────────────────┴────────────────────┴────────────────────┤
+│ total run duration: 7s                                            │
+├───────────────────────────────────────────────────────────────────┤
+│ total data received: 38.96kB (approx)                             │
+├───────────────────────────────────────────────────────────────────┤
+│ average response time: 197ms [min: 46ms, max: 798ms, s.d.: 149ms] │
+└───────────────────────────────────────────────────────────────────┘
