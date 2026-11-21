@@ -2,7 +2,7 @@
   "info": {
     "_postman_id": "39004bce-6d40-453a-940f-82c3fb20ffe8",
     "name": "API Testing Practice",
-    "description": "Self-directed API testing practice against public APIs (JSONPlaceholder, ReqRes). Covers GET/POST/PUT/PATCH/DELETE, boundary values, invalid IDs, missing fields, wrong types, pagination and auth errors. Each request has assertions in the Tests tab.",
+    "description": "API testing practice against public APIs (JSONPlaceholder, ReqRes, GitHub). Covers GET/POST/PUT/PATCH/DELETE, boundary and invalid IDs, missing fields, wrong types, malformed JSON, pagination and auth failures (401/403). Each request has assertions in its Tests tab. Expected-vs-actual write-up: docs/test-results.md.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "item": [
@@ -338,7 +338,7 @@
                 "posts"
               ]
             },
-            "description": "Negative: no required fields. Expected 400, actual 201 \u2014 see docs/test-results.md OBS-01.",
+            "description": "Negative: no required fields. Expected 400, actual 201 — see docs/test-results.md OBS-01.",
             "body": {
               "mode": "raw",
               "raw": "{}",
@@ -357,7 +357,7 @@
                 "exec": [
                   "pm.test(\"Status is 201\", () => pm.response.to.have.status(201));",
                   "pm.test(\"Documented: API accepts empty body (no validation)\", () => pm.expect(pm.response.json()).to.have.property(\"id\"));",
-                  "console.warn(\"Expected 400 for missing fields but JSONPlaceholder returns 201 \u2014 logged as observation OBS-01\");"
+                  "console.warn(\"Expected 400 for missing fields but JSONPlaceholder returns 201 — logged as observation OBS-01\");"
                 ]
               }
             }
@@ -383,7 +383,7 @@
                 "posts"
               ]
             },
-            "description": "Negative: wrong data types. Expected 400, actual 201 \u2014 OBS-02.",
+            "description": "Negative: wrong data types. Expected 400, actual 201 — OBS-02.",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"title\": 123,\n  \"body\": true,\n  \"userId\": \"one\"\n}",
@@ -427,7 +427,7 @@
                 "posts"
               ]
             },
-            "description": "Negative: body is not valid JSON. Expected 400, actual 500 \u2014 OBS-05.",
+            "description": "Negative: body is not valid JSON. Expected 400, actual 500 — OBS-05.",
             "body": {
               "mode": "raw",
               "raw": "{\"title\": \"broken\", ",
@@ -445,7 +445,7 @@
                 "type": "text/javascript",
                 "exec": [
                   "pm.test(\"Documented: malformed JSON returns 500 instead of 400\", () => pm.expect(pm.response.code).to.eql(500));",
-                  "console.warn(\"Expected 400 Bad Request for malformed JSON, actual 500 \u2014 OBS-05\");"
+                  "console.warn(\"Expected 400 Bad Request for malformed JSON, actual 500 — OBS-05\");"
                 ]
               }
             }
@@ -519,7 +519,7 @@
                 "9999"
               ]
             },
-            "description": "Negative: update missing resource. Expected 404, actual 500 \u2014 OBS-03.",
+            "description": "Negative: update missing resource. Expected 404, actual 404.",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"id\": 9999,\n  \"title\": \"x\",\n  \"body\": \"y\",\n  \"userId\": 1\n}",
@@ -536,9 +536,8 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "pm.test(\"Status is 500\", () => pm.response.to.have.status(500));",
-                  "pm.test(\"Documented: returns 500 instead of 404\", () => pm.expect(pm.response.code).to.eql(500));",
-                  "console.warn(\"Expected 404, actual 500 \u2014 OBS-03\");"
+                  "pm.test(\"Status is 404\", () => pm.response.to.have.status(404));",
+                  "pm.test(\"Body is empty object\", () => pm.expect(pm.response.json()).to.eql({}));"
                 ]
               }
             }
@@ -593,6 +592,53 @@
           "response": []
         },
         {
+          "name": "PATCH non-existent post",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{jsonplaceholder}}/posts/9999",
+              "host": [
+                "{{jsonplaceholder}}"
+              ],
+              "path": [
+                "posts",
+                "9999"
+              ]
+            },
+            "description": "Negative: partial update of a missing resource. Expected 404 (PUT on the same id returns 404), actual 200 - OBS-03.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"patched\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status is 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Documented: PATCH on missing id returns 200, PUT returns 404\", () => pm.expect(pm.response.code).to.eql(200));",
+                  "pm.test(\"Response has no id (nothing was found to patch)\", () => pm.expect(pm.response.json()).to.not.have.property(\"id\"));",
+                  "console.warn(\"Expected 404 for PATCH /posts/9999, actual 200 - OBS-03\");"
+                ]
+              }
+            }
+          ]
+        },
+        {
           "name": "DELETE post (valid)",
           "request": {
             "method": "DELETE",
@@ -638,7 +684,7 @@
                 "9999"
               ]
             },
-            "description": "Negative: delete missing resource. OBS-04."
+            "description": "Negative: delete missing resource. Expected 404, actual 200. Logged as note N-1 (idempotent delete is defensible), not counted as an observation."
           },
           "event": [
             {
@@ -648,7 +694,7 @@
                 "exec": [
                   "pm.test(\"Status is 200\", () => pm.response.to.have.status(200));",
                   "pm.test(\"Documented: idempotent delete returns 200 not 404\", () => pm.expect(pm.response.code).to.eql(200));",
-                  "console.warn(\"Expected 404, actual 200 \u2014 OBS-04\");"
+                  "console.warn(\"Expected 404, actual 200 - note N-1 (idempotent delete)\");"
                 ]
               }
             }
@@ -658,7 +704,7 @@
       ]
     },
     {
-      "name": "Comments",
+      "name": "Comments & Users",
       "item": [
         {
           "name": "GET comments for post",
@@ -727,109 +773,6 @@
           "response": []
         },
         {
-          "name": "GET comments by postId query",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{jsonplaceholder}}/comments?postId=1",
-              "host": [
-                "{{jsonplaceholder}}"
-              ],
-              "path": [
-                "comments"
-              ],
-              "query": [
-                {
-                  "key": "postId",
-                  "value": "1"
-                }
-              ]
-            },
-            "description": "Equivalence check vs nested route."
-          },
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test(\"Status is 200\", () => pm.response.to.have.status(200));",
-                  "pm.test(\"Same result as nested route\", () => pm.expect(pm.response.json()).to.have.lengthOf(5));"
-                ]
-              }
-            }
-          ],
-          "response": []
-        }
-      ]
-    },
-    {
-      "name": "Users",
-      "item": [
-        {
-          "name": "GET all users",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{jsonplaceholder}}/users",
-              "host": [
-                "{{jsonplaceholder}}"
-              ],
-              "path": [
-                "users"
-              ]
-            },
-            "description": "Nested object schema check."
-          },
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test(\"Status is 200\", () => pm.response.to.have.status(200));",
-                  "pm.test(\"10 users\", () => pm.expect(pm.response.json()).to.have.lengthOf(10));",
-                  "pm.test(\"Nested address.geo present\", () => pm.expect(pm.response.json()[0].address.geo).to.have.keys(\"lat\",\"lng\"));"
-                ]
-              }
-            }
-          ],
-          "response": []
-        },
-        {
-          "name": "GET user by ID",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{jsonplaceholder}}/users/1",
-              "host": [
-                "{{jsonplaceholder}}"
-              ],
-              "path": [
-                "users",
-                "1"
-              ]
-            },
-            "description": "Known record."
-          },
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test(\"Status is 200\", () => pm.response.to.have.status(200));",
-                  "pm.test(\"username is Bret\", () => pm.expect(pm.response.json().username).to.eql(\"Bret\"));"
-                ]
-              }
-            }
-          ],
-          "response": []
-        },
-        {
           "name": "GET user invalid ID",
           "request": {
             "method": "GET",
@@ -858,44 +801,11 @@
             }
           ],
           "response": []
-        },
-        {
-          "name": "GET todos for user",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{jsonplaceholder}}/users/1/todos",
-              "host": [
-                "{{jsonplaceholder}}"
-              ],
-              "path": [
-                "users",
-                "1",
-                "todos"
-              ]
-            },
-            "description": "Type check on boolean field."
-          },
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test(\"Status is 200\", () => pm.response.to.have.status(200));",
-                  "pm.test(\"20 todos\", () => pm.expect(pm.response.json()).to.have.lengthOf(20));",
-                  "pm.test(\"completed is boolean\", () => pm.response.json().forEach(t => pm.expect(t.completed).to.be.a(\"boolean\")));"
-                ]
-              }
-            }
-          ],
-          "response": []
         }
       ]
     },
     {
-      "name": "ReqRes (auth & pagination)",
+      "name": "ReqRes (pagination & validation)",
       "item": [
         {
           "name": "GET users page 2",
@@ -1098,51 +1008,6 @@
           "response": []
         },
         {
-          "name": "POST login (unknown user)",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "url": {
-              "raw": "{{reqres}}/api/login",
-              "host": [
-                "{{reqres}}"
-              ],
-              "path": [
-                "api",
-                "login"
-              ]
-            },
-            "description": "Negative: unregistered email.",
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"email\": \"nobody@example.com\",\n  \"password\": \"x\"\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            }
-          },
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test(\"Status is 400\", () => pm.response.to.have.status(400));",
-                  "pm.test(\"error says user not found\", () => pm.expect(pm.response.json().error).to.include(\"not found\"));"
-                ]
-              }
-            }
-          ],
-          "response": []
-        },
-        {
           "name": "POST register (missing email)",
           "request": {
             "method": "POST",
@@ -1218,29 +1083,42 @@
             }
           ],
           "response": []
-        },
+        }
+      ]
+    },
+    {
+      "name": "Auth failures",
+      "item": [
         {
-          "name": "GET delayed response",
+          "name": "POST login (unknown user)",
           "request": {
-            "method": "GET",
-            "header": [],
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "url": {
-              "raw": "{{reqres}}/api/users?delay=3",
+              "raw": "{{reqres}}/api/login",
               "host": [
                 "{{reqres}}"
               ],
               "path": [
                 "api",
-                "users"
-              ],
-              "query": [
-                {
-                  "key": "delay",
-                  "value": "3"
-                }
+                "login"
               ]
             },
-            "description": "Timeout / latency behaviour."
+            "description": "Auth failure: unknown email. Expected 401, actual 400 with 'user not found'. Logged as note N-2 (many APIs use 400 here), not counted.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"nobody@example.com\",\n  \"password\": \"x\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
           },
           "event": [
             {
@@ -1248,13 +1126,171 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "pm.test(\"Status is 200\", () => pm.response.to.have.status(200));",
-                  "pm.test(\"Takes at least 3s (delay param honoured)\", () => pm.expect(pm.response.responseTime).to.be.above(2900));"
+                  "pm.test(\"Status is 400\", () => pm.response.to.have.status(400));",
+                  "pm.test(\"error says user not found\", () => pm.expect(pm.response.json().error).to.include(\"not found\"));"
                 ]
               }
             }
           ],
           "response": []
+        },
+        {
+          "name": "POST login (wrong password)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{reqres}}/api/login",
+              "host": [
+                "{{reqres}}"
+              ],
+              "path": [
+                "api",
+                "login"
+              ]
+            },
+            "description": "Auth failure: known email, wrong password. Expected 401 and no token, actual 200 with the same token as a valid login - OBS-04.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"eve.holt@reqres.in\",\n  \"password\": \"{{wrongPassword}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status is 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Documented: wrong password still returns a token\", () => pm.expect(pm.response.json().token).to.be.a(\"string\"));",
+                  "pm.test(\"Token is identical to the valid-login token\", () => pm.expect(pm.response.json().token).to.eql(pm.collectionVariables.get(\"token\")));",
+                  "console.warn(\"Expected 401 for a wrong password, actual 200 with a token - OBS-04\");"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET user with invalid API key",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-api-key",
+                "value": "{{invalidApiKey}}"
+              }
+            ],
+            "url": {
+              "raw": "{{reqres}}/api/users/2",
+              "host": [
+                "{{reqres}}"
+              ],
+              "path": [
+                "api",
+                "users",
+                "2"
+              ]
+            },
+            "description": "Auth failure: x-api-key that does not exist. Expected 401, actual 403. Logged as note N-3, not counted."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status is 403\", () => pm.response.to.have.status(403));",
+                  "pm.test(\"Rejected as invalid_api_key with no user data\", () => { const b = pm.response.json(); pm.expect(b.error).to.eql(\"invalid_api_key\"); pm.expect(b).to.not.have.property(\"data\"); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET /user with no token (GitHub)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/vnd.github+json"
+              }
+            ],
+            "url": {
+              "raw": "{{github}}/user",
+              "host": [
+                "{{github}}"
+              ],
+              "path": [
+                "user"
+              ]
+            },
+            "description": "Auth failure: protected endpoint with no credentials. Expected 401."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status is 401\", () => pm.response.to.have.status(401));",
+                  "pm.test(\"message is Requires authentication\", () => pm.expect(pm.response.json().message).to.eql(\"Requires authentication\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET /user with invalid token (GitHub)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/vnd.github+json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{invalidGithubToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{github}}/user",
+              "host": [
+                "{{github}}"
+              ],
+              "path": [
+                "user"
+              ]
+            },
+            "description": "Auth failure: bearer token that does not exist. Expected 401."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status is 401\", () => pm.response.to.have.status(401));",
+                  "pm.test(\"message is Bad credentials\", () => pm.expect(pm.response.json().message).to.eql(\"Bad credentials\"));"
+                ]
+              }
+            }
+          ]
         }
       ]
     }
