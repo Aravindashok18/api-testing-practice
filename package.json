@@ -1,0 +1,14 @@
+{
+  "name": "api-testing-practice",
+  "version": "1.1.0",
+  "private": true,
+  "description": "Postman collection of 33 requests / 79 assertions against public REST APIs, run with Newman",
+  "scripts": {
+    "test": "newman run collections/api-testing-practice.postman_collection.json -e environments/public-apis.postman_environment.json",
+    "test:report": "newman run collections/api-testing-practice.postman_collection.json -e environments/public-apis.postman_environment.json -r cli,junit --reporter-junit-export reports/newman-junit.xml"
+  },
+  "devDependencies": {
+    "newman": "^6.2.1"
+  },
+  "license": "MIT"
+}
